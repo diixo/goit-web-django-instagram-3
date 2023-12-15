@@ -1,6 +1,7 @@
 import os
 from django.shortcuts import render, redirect
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from .models import Picture
 from .forms import PictureForm
 
@@ -9,6 +10,7 @@ def main(request):
     # mapped to app_instagram/template/...
     return render(request, "app_instagram/index.html", context={"title":"Hello world new instagram"})
 
+@login_required
 def upload(request):
     form = PictureForm(instance=Picture())
     if request.method == "POST":
@@ -18,11 +20,13 @@ def upload(request):
             return redirect(to="app_instagram:pictures")
     return render(request, "app_instagram/upload.html", context={"title": "Hello world from upload", "form": form})
 
+@login_required
 def pictures(request):
     pictures = Picture.objects.all() #objects as SQL-query
     return render(request, "app_instagram/pictures.html", 
                   context={"title": "Hello world from pictures", "pictures": pictures, "media": settings.MEDIA_URL})
 
+@login_required
 def remove(request, pic_id):
     picture = Picture.objects.filter(pk=pic_id)
     try:
@@ -32,6 +36,7 @@ def remove(request, pic_id):
     picture.delete()
     return redirect(to="app_instagram:pictures")
 
+@login_required
 def edit(request, pic_id):
 
     if request.method == "POST":
