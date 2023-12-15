@@ -1,6 +1,9 @@
+
 from django.db import models
 import os
 from uuid import uuid4
+
+from django.contrib.auth.models import User
 
 def update_filename(instance, filename):
     upload_to = "uploads"
@@ -13,3 +16,4 @@ def update_filename(instance, filename):
 class Picture(models.Model):
     description = models.CharField(max_length=150)
     path = models.ImageField(upload_to=update_filename)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
