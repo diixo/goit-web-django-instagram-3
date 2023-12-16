@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 from .apps import AppInstagramConfig
 
-app_name = "app_instagram"
+app_name = AppInstagramConfig.name
 
 urlpatterns = [
     #view.main - function that make Pesentation of mapping base url (root in our case)
