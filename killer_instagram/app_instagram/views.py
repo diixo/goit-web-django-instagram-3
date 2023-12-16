@@ -16,19 +16,21 @@ def upload(request):
     if request.method == "POST":
         form = PictureForm(request.POST, request.FILES, instance = Picture())
         if form.is_valid():
+            pic = form.save(commit=False)
+            pic.user = request.user
             form.save()
             return redirect(to="app_instagram:pictures")
     return render(request, "app_instagram/upload.html", context={"title": "Hello world from upload", "form": form})
 
 @login_required
 def pictures(request):
-    pictures = Picture.objects.all() #objects as SQL-query
+    pictures = Picture.objects.filter(user=request.user).all() #objects as SQL-query
     return render(request, "app_instagram/pictures.html", 
                   context={"title": "Hello world from pictures", "pictures": pictures, "media": settings.MEDIA_URL})
 
 @login_required
 def remove(request, pic_id):
-    picture = Picture.objects.filter(pk=pic_id)
+    picture = Picture.objects.filter(pk=pic_id, user=request.user)
     try:
         os.unlink(os.path.join(settings.MEDIA_ROOT, str(picture.first().path)))
     except OSError as e:
@@ -41,8 +43,9 @@ def edit(request, pic_id):
 
     if request.method == "POST":
         description = request.POST.get('description')
-        Picture.objects.filter(pk=pic_id).update(description=description)
+        Picture.objects.filter(pk=pic_id, user=request.user).update(description=description)
         return redirect(to="app_instagram:pictures")
-    picture = Picture.objects.filter(pk=pic_id).first()
+
+    picture = Picture.objects.filter(pk=pic_id, user=request.user).first()
     return render(request, "app_instagram/edit.html", 
                   context={"title": "Hello world from pictures", "pic": picture, "media": settings.MEDIA_URL})
