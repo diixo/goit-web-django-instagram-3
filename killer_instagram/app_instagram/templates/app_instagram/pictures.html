@@ -8,7 +8,7 @@
         <div class="card" style="width: 18rem;">
             <img src="{{media}}{{pic.path}}" class="card-img-top" alt="pic">
             <div class="card-body">
-                <p class="card-text">{{pic.description}}</p>
+                <p class="card-text">Description: {{pic.description}}</p>
                 <a href="{% url 'app_instagram:edit' pic.id %}" class="btn btn-info">Edit</a>
                 <a href="{% url 'app_instagram:remove' pic.id %}" class="btn btn-danger">Delete</a>
             </div>
